@@ -14,9 +14,8 @@ export interface IAccordionOptions {
 
 export interface IModalOptions {
   id: string;
-  size?: 'sm' | 'lg' | 'xl';
+  size?: "sm" | "lg" | "xl";
   beforeShown?: string;
   imgSrc?: string;
   iframeSrc?: string;
 }
-export {};

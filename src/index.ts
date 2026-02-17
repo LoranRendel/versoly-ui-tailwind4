@@ -1,4 +1,4 @@
-import { accordion, collapse, dismiss, dropdown, modal, tabs, handleResize } from './plugins/index';
+import { accordion, collapse, dismiss, dropdown, modal, tabs, handleResize } from "./plugins/index";
 
 (function () {
   window.vInitialized = false;
@@ -18,8 +18,8 @@ import { accordion, collapse, dismiss, dropdown, modal, tabs, handleResize } fro
     handleResize();
   };
 
-  document.addEventListener('DOMContentLoaded', window.initializeVUI);
-  if (document.readyState !== 'loading') {
+  document.addEventListener("DOMContentLoaded", window.initializeVUI);
+  if (document.readyState !== "loading") {
     window.initializeVUI();
   }
 })();

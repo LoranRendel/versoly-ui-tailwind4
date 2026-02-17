@@ -11,7 +11,7 @@
       "program": "${file}",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/tsx",
       "cwd": "${workspaceRoot}",
-      "skipFiles": ["<node_internals>/**", "node_modules/**"],
+      "skipFiles": ["<node_internals>/**", "node_modules/**"]
     },
     {
       "name": "Debug Current Test File",
@@ -22,7 +22,7 @@
       "args": ["run", "${relativeFile}"],
       "smartStep": true,
       "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
-    },
-  ],
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+    }
+  ]
 }

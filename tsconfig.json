@@ -1,14 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "baseUrl": ".",
+    "target": "ES2022",
     "module": "ESNext",
-    "lib": ["esnext", "dom"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "moduleResolution": "Bundler",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+
+    /* Modern Additions */
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "useDefineForClassFields": true,
+    "noEmit": true
   },
-  "include": ["src"],
+  "include": ["src"]
 }

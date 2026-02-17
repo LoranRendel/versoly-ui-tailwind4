@@ -1,4 +1,4 @@
-import type { IAccordionOptions } from 'src/types';
+import type { IAccordionOptions } from "../types";
 import {
   addEventListeners,
   getDuration,
@@ -6,7 +6,7 @@ import {
   getElementsByToggle,
   getIsAriaExpanded,
   parseElementOptions,
-} from '../utils/index';
+} from "../utils/index";
 
 interface IAccordionItem {
   trigger: HTMLElement;
@@ -14,33 +14,33 @@ interface IAccordionItem {
 }
 
 const handleOpen = (trigger: HTMLElement, target: HTMLElement, duration: number) => {
-  target.style.overflow = 'hidden';
-  target.style.height = '0';
+  target.style.overflow = "hidden";
+  target.style.height = "0";
 
-  trigger.setAttribute('aria-expanded', 'true');
-  target.classList.add('block');
-  target.classList.add('show');
-  target.classList.remove('hidden');
+  trigger.setAttribute("aria-expanded", "true");
+  target.classList.add("block");
+  target.classList.add("show");
+  target.classList.remove("hidden");
 
   window.setTimeout(() => {
     target.style.height = `${target.scrollHeight}px`;
   }, 33);
 
   window.setTimeout(() => {
-    target.style.overflow = '';
+    target.style.overflow = "clip";
   }, duration);
 };
 
 const handleClose = (trigger: HTMLElement, target: HTMLElement, duration: number) => {
-  target.style.overflow = 'hidden';
-  target.style.height = '0';
+  target.style.overflow = "hidden";
+  target.style.height = "0";
 
-  trigger.setAttribute('aria-expanded', 'false');
-  target.classList.remove('show');
+  trigger.setAttribute("aria-expanded", "false");
+  target.classList.remove("show");
 
   window.setTimeout(() => {
-    target.classList.remove('block');
-    target.classList.add('hidden');
+    target.classList.remove("block");
+    target.classList.add("hidden");
   }, duration);
 };
 
@@ -54,10 +54,10 @@ const Accordion = (element: HTMLElement) => {
 
   const canOpenMultiple = max === null;
 
-  const items: IAccordionItem[] = getElementsBySelectors('.accordion-item [aria-expanded]', element).reduce(
+  const items: IAccordionItem[] = getElementsBySelectors(".accordion-item [aria-expanded]", element).reduce(
     (acc: IAccordionItem[], trigger) => {
-      const item = trigger.closest('.accordion-item');
-      const target = item?.querySelector('.accordion-collapse');
+      const item = trigger.closest(".accordion-item");
+      const target = item?.querySelector(".accordion-collapse");
       if (item && target instanceof HTMLElement) {
         acc.push({ trigger, target });
       }
@@ -93,7 +93,7 @@ const Accordion = (element: HTMLElement) => {
   };
 
   items.forEach((item) => {
-    addEventListeners(item.trigger, ['click'], () => toggle(item));
+    addEventListeners(item.trigger, ["click"], () => toggle(item));
   });
 
   if (min === 1 && getOpenCount() === 0 && items.length > 0) {
@@ -103,19 +103,19 @@ const Accordion = (element: HTMLElement) => {
 
 export const accordion = () => {
   // legacy support for accordion via data attributes on headers
-  getElementsBySelectors('.accordion-header[data-toggle=accordion]').forEach((element) => {
-    const parentAccordion = element.closest('.accordion');
+  getElementsBySelectors(".accordion-header[data-toggle=accordion]").forEach((element) => {
+    const parentAccordion = element.closest(".accordion");
     if (parentAccordion) {
-      parentAccordion.setAttribute('data-toggle', 'accordion');
+      parentAccordion.setAttribute("data-toggle", "accordion");
 
-      if (element.hasAttribute('data-parent') && !parentAccordion.hasAttribute('data-options')) {
-        parentAccordion.setAttribute('data-options', "{'min': 1, 'max': 1}");
+      if (element.hasAttribute("data-parent") && !parentAccordion.hasAttribute("data-options")) {
+        parentAccordion.setAttribute("data-options", "{'min': 1, 'max': 1}");
       }
       return;
     }
 
-    element.removeAttribute('data-toggle');
+    element.removeAttribute("data-toggle");
   });
 
-  getElementsByToggle('accordion').forEach(Accordion);
+  getElementsByToggle("accordion").forEach(Accordion);
 };

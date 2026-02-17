@@ -1,8 +1,8 @@
-import type { IModalOptions } from 'src/types';
-import { waitForElement, parseElementOptions, addEventListenerToSelector, addEscapeListener } from '../utils';
+import type { IModalOptions } from "../types";
+import { waitForElement, parseElementOptions, addEventListenerToSelector, addEscapeListener } from "../utils";
 
 const defaults = {
-  closeButton: 'fixed right-0 top-0 z-50 text-white px-5 close',
+  closeButton: "fixed right-0 top-0 z-50 text-white px-5 close",
 };
 
 // if (element.getAttribute('aria-label')) {
@@ -10,9 +10,9 @@ const defaults = {
 // }
 // element.setAttribute('aria-label', 'modal')
 
-const Modal = (element: HTMLElement) => {
+const Modal = async (element: HTMLElement) => {
   const options: IModalOptions = {
-    id: 'v-modal',
+    id: "v-modal",
     size: undefined,
     beforeShown: undefined,
     imgSrc: undefined,
@@ -22,7 +22,7 @@ const Modal = (element: HTMLElement) => {
 
   const { size, beforeShown, id, imgSrc, iframeSrc } = options;
 
-  let content = element.dataset.html || '';
+  let content = element.dataset.html || "";
 
   if (imgSrc) {
     content = `<img src="${imgSrc}">`;
@@ -32,7 +32,7 @@ const Modal = (element: HTMLElement) => {
   }
 
   const modalHTML = `<div class="modal" id="${id}">
-  <div class="modal-content ${size ? `modal-${size}` : ''}">
+  <div class="modal-content ${size ? `modal-${size}` : ""}">
     ${content}
   </div>
   
@@ -45,29 +45,32 @@ const Modal = (element: HTMLElement) => {
 `;
 
   addEscapeListener(() => window.removeModal(id));
-  document.body.style.overflow = 'hidden';
-  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  document.body.style.overflow = "hidden";
+  document.body.insertAdjacentHTML("beforeend", modalHTML);
 
-  waitForElement(`#${id}`).then((ele) => {
-    beforeShown && (window as any)[beforeShown]();
-    window.setTimeout(() => ele.classList.add('opacity-100'), 32);
+  await waitForElement(`#${id}`).then((ele) => {
+    if (beforeShown) {
+      (window as any)[beforeShown]();
+    }
+
+    window.setTimeout(() => ele.classList.add("opacity-100"), 32);
   });
 };
 
-const removeModal = (id = 'v-modal') => {
+const removeModal = (id = "v-modal") => {
   const modal = document.getElementById(id);
 
   if (!modal) {
     return;
   }
 
-  modal.classList.remove('opacity-100');
+  modal.classList.remove("opacity-100");
   window.setTimeout(() => {
     modal.remove();
-    document.body.style.overflow = '';
+    document.body.style.overflow = "";
   }, 500);
 };
 
 window.removeModal = removeModal;
 
-export const modal = addEventListenerToSelector('[data-toggle="modal"]', 'click', Modal);
+export const modal = addEventListenerToSelector('[data-toggle="modal"]', "click", Modal);
