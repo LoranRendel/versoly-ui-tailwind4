@@ -8,16 +8,18 @@
 <p>
     <a href="https://discord.versoly.com"><img src="https://flat.badgen.net/badge/icon/discord?icon=discord&label" alt="Discord"></a>
     <a href="https://versoly.com/versoly-ui/getting-started/license/"><img src="https://img.shields.io/badge/license-MIT-blue" alt="Licenese"></a>
-    <a href="https://bundlephobia.com/result?p=versoly-ui">
-        <img src="https://flat.badgen.net/bundlephobia/minzip/versoly-ui?icon=packagephobia&label&color=blue&cache=10800" alt="gzip bundle size">
+    <a href="https://bundlephobia.com/result?p=@loranrendel/versoly-ui">
+        <img src="https://flat.badgen.net/bundlephobia/minzip/@loranrendel/versoly-ui?icon=packagephobia&label&color=blue&cache=10800" alt="gzip bundle size">
     </a>
-    <a href="https://unpkg.com/versoly-ui@2.1.1/dist/versoly-ui.js">
-        <img src="https://flat.badgen.net/badgesize/brotli/https://unpkg.com/versoly-ui@2.1.1/dist/versoly-ui.js?icon=jsdelivr&label&color=blue&cache=10800" alt="brotli bundle size">
+    <a href="https://unpkg.com/@loranrendel/versoly-ui/dist/versoly-ui.iife.js">
+        <img src="https://flat.badgen.net/badgesize/brotli/https://unpkg.com/@loranrendel/versoly-ui/dist/versoly-ui.iife.js?icon=jsdelivr&label&color=blue&cache=10800" alt="brotli bundle size">
     </a>
 </p>
 </div>
 
 ---
+
+> Fork of [versoly/versoly-ui](https://github.com/versoly/versoly-ui) rebuilt as a Tailwind CSS 4 plugin with `include` / `exclude` / `prefix` options. Published to npm as `@loranrendel/versoly-ui`.
 
 ## Documentation
 
@@ -59,15 +61,15 @@ For more examples go to [versoly.com/versoly-ui/getting-started/quickstart](http
 
 Versoly UI has two parts:
 
-- **Tailwind CSS plugin** (`versoly-ui/plugin`) – component classes such as `.btn`, `.card`, `.navbar`. Requires Tailwind CSS 4.
-- **JavaScript** (`versoly-ui`) – behaviour for accordions, collapse, dropdowns, modals, tabs and dismissible elements.
+- **Tailwind CSS plugin** (`@loranrendel/versoly-ui/plugin`) – component classes such as `.btn`, `.card`, `.navbar`. Requires Tailwind CSS 4.
+- **JavaScript** (`@loranrendel/versoly-ui`) – behaviour for accordions, collapse, dropdowns, modals, tabs and dismissible elements.
 
 ### Installation
 
 ```sh
-npm install -D versoly-ui tailwindcss @tailwindcss/forms
+npm install -D @loranrendel/versoly-ui tailwindcss @tailwindcss/forms
 # or
-pnpm add -D versoly-ui tailwindcss @tailwindcss/forms
+pnpm add -D @loranrendel/versoly-ui tailwindcss @tailwindcss/forms
 ```
 
 `@tailwindcss/forms` is only needed for the `form` component.
@@ -79,7 +81,7 @@ Add the plugin to your main CSS file:
 ```css
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
-@plugin "versoly-ui/plugin";
+@plugin "@loranrendel/versoly-ui/plugin";
 ```
 
 A component's classes end up in the CSS only when your markup uses them, just like Tailwind utilities. Utilities always override component styles, so `class="btn btn-primary px-8"` works as expected.
@@ -89,7 +91,7 @@ A component's classes end up in the CSS only when your markup uses them, just li
 Options are set in the `@plugin` block:
 
 ```css
-@plugin "versoly-ui/plugin" {
+@plugin "@loranrendel/versoly-ui/plugin" {
   include: button, card, navbar, dropdown;
   exclude: navbar;
   prefix: "v-";
@@ -108,12 +110,12 @@ Unknown component names and invalid prefixes are reported as warnings in the bui
 
 ```css
 /* only buttons and cards */
-@plugin "versoly-ui/plugin" {
+@plugin "@loranrendel/versoly-ui/plugin" {
   include: button, button-group, card;
 }
 
 /* everything except global element styles */
-@plugin "versoly-ui/plugin" {
+@plugin "@loranrendel/versoly-ui/plugin" {
   exclude: base, link;
 }
 ```
@@ -207,7 +209,7 @@ The plugin also works from a JavaScript config loaded with `@config`:
 
 ```js
 // tailwind.config.js
-import versolyUI from "versoly-ui/plugin";
+import versolyUI from "@loranrendel/versoly-ui/plugin";
 
 export default {
   plugins: [versolyUI({ include: ["button", "card"], prefix: "v-" })],
@@ -223,7 +225,7 @@ The dropdown uses [Floating UI](https://floating-ui.com/) from the `window.Float
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.7.4"></script>
 <script src="https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.7.4"></script>
-<script src="https://cdn.jsdelivr.net/npm/versoly-ui/dist/versoly-ui.iife.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@loranrendel/versoly-ui/dist/versoly-ui.iife.js"></script>
 ```
 
 **Bundler.** Versoly UI initializes itself when imported, so Floating UI has to be set up in a module imported before it:
@@ -237,7 +239,7 @@ window.FloatingUIDOM = FloatingUIDOM;
 ```js
 // main.js
 import "./floating-ui.js";
-import "versoly-ui";
+import "@loranrendel/versoly-ui";
 ```
 
 Components are controlled with data attributes:
@@ -260,7 +262,7 @@ Tailwind doesn't scan `node_modules`, so utilities the JavaScript adds at runtim
 
 ### Upgrading from Tailwind CSS 3
 
-- Remove the old `@tailwind` directives and the Versoly UI CSS, use `@import "tailwindcss"` and `@plugin "versoly-ui/plugin"`.
+- Remove the old `@tailwind` directives and the Versoly UI CSS, use `@import "tailwindcss"` and `@plugin "@loranrendel/versoly-ui/plugin"`.
 - Move custom colors from `tailwind.config.js` to `@theme` (see [Colors](#colors)).
 - The accordion arrow and the dropdown caret are CSS masks now and use the current text color, `bg-arrow-down` and `--svg-caret-down` don't need to be defined.
 - `.btn-ghost.btn-dark` uses gray instead of pink on hover.

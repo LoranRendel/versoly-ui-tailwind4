@@ -1,29 +1,32 @@
 {
-  "name": "versoly-ui",
-  "version": "2.3.0",
-  "description": "Versoly UI - Tailwind CSS framework based on Bootstrap",
+  "name": "@loranrendel/versoly-ui",
+  "version": "3.0.0",
+  "description": "Versoly UI - Tailwind CSS 4 framework based on Bootstrap",
   "keywords": [
     "bootstrap to tailwind",
     "dropdown Floating UI",
     "tailwind components",
     "tailwind elements",
     "tailwind library",
+    "tailwind plugin",
     "tailwind sections",
     "tailwind ui",
+    "tailwindcss 4",
     "ui kit"
   ],
-  "homepage": "https://versoly.com/versoly-ui",
+  "homepage": "https://github.com/LoranRendel/versoly-ui-tailwind4#readme",
   "bugs": {
-    "url": "https://github.com/versoly/versoly-ui/issues"
+    "url": "https://github.com/LoranRendel/versoly-ui-tailwind4/issues"
   },
   "license": "MIT",
   "author": "Versoly",
   "contributors": [
-    "Volkan Kaya <volkan@versoly.com>"
+    "Volkan Kaya <volkan@versoly.com>",
+    "Loran A. Rendel <main@enjoytool.com>"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/versoly/versoly-ui.git"
+    "url": "git+https://github.com/LoranRendel/versoly-ui-tailwind4.git"
   },
   "type": "module",
   "main": "./dist/versoly-ui.cjs",
