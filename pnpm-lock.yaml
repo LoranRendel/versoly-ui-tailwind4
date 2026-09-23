@@ -14,6 +14,9 @@ importers:
       oxlint:
         specifier: ^1.47.0
         version: 1.48.0(oxlint-tsgolint@0.14.0)
+      tailwindcss:
+        specifier: ^4.3.3
+        version: 4.3.3
       tsdown:
         specifier: ^0.20.3
         version: 0.20.3(typescript@5.9.2)
@@ -653,6 +656,9 @@ packages:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
 
+  tailwindcss@4.3.3:
+    resolution: {integrity: sha512-gOhV3P7ufE62QDGg1zVaTgCR+EtPv92k2nIhVcVKcLmxT1sUBsQGhnZj175j+MqRt4zLF7ic+sCYjfhxMxj7YQ==}
+
   tinyexec@1.0.2:
     resolution: {integrity: sha512-W/KYk+NFhkmsYpuHq5JykngiOCnxeVL8v8dFnqxSD8qEEdRfXk1SDM6JzNqcERbcGYj9tMrDQBYV9cjgnunFIg==}
     engines: {node: '>=18'}
@@ -1229,6 +1235,8 @@ snapshots:
   semver@7.7.4: {}
 
   source-map-js@1.2.1: {}
+
+  tailwindcss@4.3.3: {}
 
   tinyexec@1.0.2: {}
 

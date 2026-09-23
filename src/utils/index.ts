@@ -1,3 +1,13 @@
+// Class prefix set by the Tailwind plugin's `prefix` option, e.g. `"v-"`
+export const getPrefix = () =>
+  getComputedStyle(document.documentElement)
+    .getPropertyValue("--vui-prefix")
+    .trim()
+    .replace(/^(["'])(.*)\1$/, "$2");
+
+/** Component class name with the prefix: `cls("modal")` → `v-modal` */
+export const cls = (name: string) => `${getPrefix()}${name}`;
+
 export const getElementBySelector = (selector: string) => document.querySelector(selector) as HTMLElement;
 
 export const getElementsBySelectors = (selector: string, element: Document | HTMLElement = document) =>

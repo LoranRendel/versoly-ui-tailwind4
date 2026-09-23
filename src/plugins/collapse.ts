@@ -1,4 +1,4 @@
-import { getDuration, getTarget, addEventListenerToSelector, getIsAriaExpanded } from "../utils/index";
+import { cls, getDuration, getTarget, addEventListenerToSelector, getIsAriaExpanded } from "../utils/index";
 
 const Collapse = (element: HTMLElement) => {
   const target = getTarget(element);
@@ -23,9 +23,9 @@ const Collapse = (element: HTMLElement) => {
   target.classList.add("show");
 
   setTimeout(() => {
-    target.querySelectorAll(".dropdown-menu").forEach((m) => m.classList.add("hidden"));
+    target.querySelectorAll(`.${cls("dropdown-menu")}`).forEach((m) => m.classList.add("hidden"));
     const navHeight = target.scrollHeight;
-    target.querySelectorAll(".dropdown-menu").forEach((m) => m.classList.remove("hidden"));
+    target.querySelectorAll(`.${cls("dropdown-menu")}`).forEach((m) => m.classList.remove("hidden"));
     target.style.height = `${navHeight}px`;
   }, 32);
 

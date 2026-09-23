@@ -7,7 +7,8 @@ const getPackageName = () => {
 };
 
 const sharedConfig = {
-  exports: true,
+  // package.json "exports" are maintained by hand: tsdown would drop "./plugin"
+  exports: false,
   minify: true,
   entry: {
     [getPackageName()]: "./src/index.ts",
@@ -28,4 +29,14 @@ export default defineConfig([
   //   ...sharedConfig,
   //   format: ["esm"],
   // },
+  // Tailwind CSS 4 plugin: `@plugin "versoly-ui/plugin";`
+  {
+    entry: { plugin: "./src/tailwind/index.ts" },
+    platform: "node",
+    target: "node20",
+    format: ["esm", "cjs"],
+    fixedExtension: true,
+    dts: true,
+    external: [/^tailwindcss/],
+  },
 ]);

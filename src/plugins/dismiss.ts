@@ -1,9 +1,9 @@
-import { getDuration, getTarget, addEventListenerToSelector } from "../utils/index";
+import { cls, getDuration, getTarget, addEventListenerToSelector } from "../utils/index";
 
 const Dismiss = (element: HTMLElement) => {
   let target = getTarget(element);
   if (!target) {
-    target = element.closest(`.${element.getAttribute("data-dismiss")}`);
+    target = element.closest(`.${cls(element.getAttribute("data-dismiss") ?? "")}`);
   }
 
   if (!target) {

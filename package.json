@@ -2,41 +2,48 @@
   "name": "versoly-ui",
   "version": "2.3.0",
   "description": "Versoly UI - Tailwind CSS framework based on Bootstrap",
-  "author": "Versoly",
   "keywords": [
+    "bootstrap to tailwind",
+    "dropdown Floating UI",
     "tailwind components",
     "tailwind elements",
     "tailwind library",
     "tailwind sections",
     "tailwind ui",
-    "ui kit",
-    "bootstrap to tailwind",
-    "dropdown Floating UI"
+    "ui kit"
   ],
+  "homepage": "https://versoly.com/versoly-ui",
+  "bugs": {
+    "url": "https://github.com/versoly/versoly-ui/issues"
+  },
   "license": "MIT",
+  "author": "Versoly",
+  "contributors": [
+    "Volkan Kaya <volkan@versoly.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/versoly/versoly-ui.git"
+  },
+  "type": "module",
   "main": "./dist/versoly-ui.cjs",
+  "module": "./dist/versoly-ui.mjs",
   "unpkg": "dist/versoly-ui.iife.js",
   "jsdelivr": "dist/versoly-ui.iife.js",
-  "module": "./dist/versoly-ui.mjs",
-  "type": "module",
   "exports": {
     ".": {
       "import": "./dist/versoly-ui.mjs",
       "require": "./dist/versoly-ui.cjs"
     },
+    "./plugin": {
+      "import": "./dist/plugin.mjs",
+      "require": "./dist/plugin.cjs"
+    },
     "./package.json": "./package.json"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/versoly/versoly-ui.git"
+  "publishConfig": {
+    "access": "public"
   },
-  "bugs": {
-    "url": "https://github.com/versoly/versoly-ui/issues"
-  },
-  "homepage": "https://versoly.com/versoly-ui",
-  "contributors": [
-    "Volkan Kaya <volkan@versoly.com>"
-  ],
   "scripts": {
     "dev": "vite",
     "build": "tsdown",
@@ -50,12 +57,18 @@
   "devDependencies": {
     "oxfmt": "^0.32.0",
     "oxlint": "^1.47.0",
+    "tailwindcss": "^4.3.3",
     "tsdown": "^0.20.3",
     "type-fest": "^4.41.0",
     "typescript": "^5.9.2",
     "vite": "v8.0.0-beta.13"
   },
-  "publishConfig": {
-    "access": "public"
+  "peerDependencies": {
+    "tailwindcss": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "tailwindcss": {
+      "optional": true
+    }
   }
 }

@@ -1,5 +1,5 @@
 import type { IModalOptions } from "../types";
-import { waitForElement, parseElementOptions, addEventListenerToSelector, addEscapeListener } from "../utils";
+import { cls, waitForElement, parseElementOptions, addEventListenerToSelector, addEscapeListener } from "../utils";
 
 const defaults = {
   closeButton: "fixed right-0 top-0 z-50 text-white px-5 close",
@@ -31,8 +31,8 @@ const Modal = async (element: HTMLElement) => {
     content = `<iframe allow="autoplay" class="aspect-video w-full" src="${iframeSrc}" allowfullscreen="" autoplay=""></iframe>`;
   }
 
-  const modalHTML = `<div class="modal" id="${id}">
-  <div class="modal-content ${size ? `modal-${size}` : ""}">
+  const modalHTML = `<div class="${cls("modal")}" id="${id}">
+  <div class="${cls("modal-content")} ${size ? cls(`modal-${size}`) : ""}">
     ${content}
   </div>
   
@@ -40,7 +40,7 @@ const Modal = async (element: HTMLElement) => {
     <span class="text-4xl" aria-hidden="true">&times;</span>
   </button>
 
-  <div class="modal-bg" onclick="removeModal('${id}')"></div>
+  <div class="${cls("modal-bg")}" onclick="removeModal('${id}')"></div>
 </div>
 `;
 

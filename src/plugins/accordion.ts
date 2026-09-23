@@ -1,6 +1,7 @@
 import type { IAccordionOptions } from "../types";
 import {
   addEventListeners,
+  cls,
   getDuration,
   getElementsBySelectors,
   getElementsByToggle,
@@ -54,10 +55,10 @@ const Accordion = (element: HTMLElement) => {
 
   const canOpenMultiple = max === null;
 
-  const items: IAccordionItem[] = getElementsBySelectors(".accordion-item [aria-expanded]", element).reduce(
+  const items: IAccordionItem[] = getElementsBySelectors(`.${cls("accordion-item")} [aria-expanded]`, element).reduce(
     (acc: IAccordionItem[], trigger) => {
-      const item = trigger.closest(".accordion-item");
-      const target = item?.querySelector(".accordion-collapse");
+      const item = trigger.closest(`.${cls("accordion-item")}`);
+      const target = item?.querySelector(`.${cls("accordion-collapse")}`);
       if (item && target instanceof HTMLElement) {
         acc.push({ trigger, target });
       }
@@ -103,8 +104,8 @@ const Accordion = (element: HTMLElement) => {
 
 export const accordion = () => {
   // legacy support for accordion via data attributes on headers
-  getElementsBySelectors(".accordion-header[data-toggle=accordion]").forEach((element) => {
-    const parentAccordion = element.closest(".accordion");
+  getElementsBySelectors(`.${cls("accordion-header")}[data-toggle=accordion]`).forEach((element) => {
+    const parentAccordion = element.closest(`.${cls("accordion")}`);
     if (parentAccordion) {
       parentAccordion.setAttribute("data-toggle", "accordion");
 
