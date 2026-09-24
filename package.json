@@ -49,6 +49,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "prepare": "pnpm run build",
     "build": "tsdown",
     "build:watch": "tsdown --watch",
     "fmt": "oxfmt",
