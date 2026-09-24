@@ -23,7 +23,15 @@ export default defineConfig([
     ...sharedConfig,
     target: browserTargets,
     fixedExtension: true,
-    format: ["esm", "cjs", "iife"],
+    format: ["esm", "cjs"],
+  },
+  // the <script> build has no package manager to install dependencies, so it bundles them
+  {
+    ...sharedConfig,
+    target: browserTargets,
+    format: ["iife"],
+    noExternal: [/^@floating-ui\//],
+    inlineOnly: [/^@floating-ui\//],
   },
   // {
   //   ...sharedConfig,

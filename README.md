@@ -67,12 +67,12 @@ Versoly UI has two parts:
 ### Installation
 
 ```sh
-npm install -D @loranrendel/versoly-ui tailwindcss @tailwindcss/forms
+npm install -D @loranrendel/versoly-ui tailwindcss
 # or
-pnpm add -D @loranrendel/versoly-ui tailwindcss @tailwindcss/forms
+pnpm add -D @loranrendel/versoly-ui tailwindcss
 ```
 
-`@tailwindcss/forms` is only needed for the `form` component.
+Dependencies ([Floating UI](https://floating-ui.com/) for dropdowns, [@tailwindcss/forms](https://github.com/tailwindlabs/tailwindcss-forms) for form controls) are installed with the package, you don't need to add them yourself.
 
 ### Tailwind CSS plugin
 
@@ -80,9 +80,10 @@ Add the plugin to your main CSS file:
 
 ```css
 @import "tailwindcss";
-@plugin "@tailwindcss/forms";
 @plugin "@loranrendel/versoly-ui/plugin";
 ```
+
+The `form` component includes the `@tailwindcss/forms` classes (`.form-input`, `.form-checkbox`…). To also reset unstyled inputs globally, add `@plugin "@tailwindcss/forms";` yourself.
 
 A component's classes end up in the CSS only when your markup uses them, just like Tailwind utilities. Utilities always override component styles, so `class="btn btn-primary px-8"` works as expected.
 
@@ -177,7 +178,15 @@ The plugin adds these colors to the theme:
 
 `tertiary`, `success`, `warning` and `neutral` use Tailwind's `purple`, `green`, `yellow` and `neutral`.
 
-Override any color in `@theme`. Palette colors need every shade (50–950) plus the default one:
+The colors are CSS variables (`--color-primary`, `--color-primary-50` … `--color-primary-950`, `--color-dark`, `--color-muted`…), always added to `:root` whatever components are included, so they can be used in your own CSS:
+
+```css
+.hero {
+  background: var(--color-primary-600);
+}
+```
+
+Override any color in `@theme`, shades you don't set keep their defaults:
 
 ```css
 @theme {
@@ -218,28 +227,16 @@ export default {
 
 ### JavaScript
 
-The dropdown uses [Floating UI](https://floating-ui.com/) from the `window.FloatingUIDOM` global.
+**Bundler.** Versoly UI initializes itself when imported:
 
-**CDN:**
+```js
+import "@loranrendel/versoly-ui";
+```
+
+**CDN.** The script build already includes Floating UI:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.7.4"></script>
-<script src="https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.7.4"></script>
 <script src="https://cdn.jsdelivr.net/npm/@loranrendel/versoly-ui/dist/versoly-ui.iife.js"></script>
-```
-
-**Bundler.** Versoly UI initializes itself when imported, so Floating UI has to be set up in a module imported before it:
-
-```js
-// floating-ui.js
-import * as FloatingUIDOM from "@floating-ui/dom";
-window.FloatingUIDOM = FloatingUIDOM;
-```
-
-```js
-// main.js
-import "./floating-ui.js";
-import "@loranrendel/versoly-ui";
 ```
 
 Components are controlled with data attributes:
@@ -264,6 +261,7 @@ Tailwind doesn't scan `node_modules`, so utilities the JavaScript adds at runtim
 
 - Remove the old `@tailwind` directives and the Versoly UI CSS, use `@import "tailwindcss"` and `@plugin "@loranrendel/versoly-ui/plugin"`.
 - Move custom colors from `tailwind.config.js` to `@theme` (see [Colors](#colors)).
+- Remove the Floating UI `<script>` tags and `window.FloatingUIDOM`, and `@tailwindcss/forms` if you only used it for Versoly UI forms.
 - The accordion arrow and the dropdown caret are CSS masks now and use the current text color, `bg-arrow-down` and `--svg-caret-down` don't need to be defined.
 - `.btn-ghost.btn-dark` uses gray instead of pink on hover.
 

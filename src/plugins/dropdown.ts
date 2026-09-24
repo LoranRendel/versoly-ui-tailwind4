@@ -1,7 +1,7 @@
+import { computePosition, offset, shift, type Placement } from "@floating-ui/dom";
 import { addEventListeners, addEscapeListener, getElementsByToggle, parseElementOptions } from "../utils/index";
 
 const Dropdown = (trigger: HTMLElement) => {
-  const { computePosition, shift, offset } = window.FloatingUIDOM;
   const target = trigger.nextElementSibling as HTMLElement;
   const parent = trigger.parentElement as HTMLElement;
 
@@ -20,9 +20,9 @@ const Dropdown = (trigger: HTMLElement) => {
 
   function update() {
     computePosition(trigger, target, {
-      placement: options.placement || "bottom",
+      placement: (options.placement as Placement) || "bottom",
       middleware,
-    }).then(({ x, y }: { x: number; y: number }) => {
+    }).then(({ x, y }) => {
       Object.assign(target.style, {
         left: `${x}px`,
         top: `${y}px`,

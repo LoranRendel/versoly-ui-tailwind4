@@ -1,6 +1,6 @@
 {
   "name": "@loranrendel/versoly-ui",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Versoly UI - Tailwind CSS 4 framework based on Bootstrap",
   "keywords": [
     "bootstrap to tailwind",
@@ -57,6 +57,10 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "prepack": "pnpm run build"
+  },
+  "dependencies": {
+    "@floating-ui/dom": "^1.8.0",
+    "@tailwindcss/forms": "^0.5.11"
   },
   "devDependencies": {
     "oxfmt": "^0.32.0",

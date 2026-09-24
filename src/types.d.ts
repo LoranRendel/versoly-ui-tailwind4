@@ -3,7 +3,6 @@ declare global {
     vInitialized: boolean;
     initializeVUI: () => void;
     removeModal: (id?: string) => void;
-    FloatingUIDOM: any;
   }
 }
 

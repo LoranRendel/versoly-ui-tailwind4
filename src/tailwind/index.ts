@@ -1,5 +1,7 @@
-import plugin, { type PluginUtils } from "tailwindcss/plugin";
+import forms from "@tailwindcss/forms";
+import plugin, { type PluginCreator } from "tailwindcss/plugin";
 import { components, type ComponentName } from "./components/index";
+import { addColorVariables, colors } from "./theme";
 import type { CssInJs, Styles } from "./types";
 
 export interface VersolyUIOptions {
@@ -99,35 +101,42 @@ const splitStyles = (styles: Styles, prefix: string) => {
 };
 
 const versolyUI: ReturnType<typeof plugin.withOptions<VersolyUIOptions>> = plugin.withOptions<VersolyUIOptions>(
-  (options) =>
-    ({ addBase, addComponents }) => {
-      const prefix = toPrefix(options?.prefix);
-      if (prefix) {
-        // read by the JS to find prefixed elements
-        addBase({ ":root": { "--vui-prefix": `"${prefix}"` } });
-      }
+  (options) => (api) => {
+    const { addBase, addComponents } = api;
+    addColorVariables(api);
 
-      for (const name of getComponentNames(options)) {
-        const { base, classes } = splitStyles(components[name], prefix);
-        if (Object.keys(base).length > 0) {
-          addBase(base);
-        }
-        addComponents(classes);
+    const prefix = toPrefix(options?.prefix);
+    if (prefix) {
+      // read by the JS to find prefixed elements
+      addBase({ ":root": { "--vui-prefix": `"${prefix}"` } });
+    }
+
+    const names = getComponentNames(options);
+    if (names.includes("form")) {
+      // `.form-input`, `.form-checkbox`… are built on top of the forms plugin's classes. They go to the base layer,
+      // so the component styles always override them.
+      const addPrefixedBase = (rules: Record<string, CssInJs>) =>
+        addBase(
+          Object.fromEntries(Object.entries(rules).map(([selector, css]) => [prefixSelector(selector, prefix), css])),
+        );
+      (forms({ strategy: "class" }).handler as PluginCreator)({
+        ...api,
+        addComponents: (rules) => (Array.isArray(rules) ? rules.forEach(addPrefixedBase) : addPrefixedBase(rules)),
+      });
+    }
+
+    for (const name of names) {
+      const { base, classes } = splitStyles(components[name], prefix);
+      if (Object.keys(base).length > 0) {
+        addBase(base);
       }
-    },
+      addComponents(classes);
+    }
+  },
   () => ({
     theme: {
-      extend: {
-        // Defaults, override with `@theme { --color-primary-600: …; }`
-        colors: ({ theme }: PluginUtils) => ({
-          primary: { DEFAULT: theme("colors.blue.600"), ...theme("colors.blue") },
-          secondary: { DEFAULT: theme("colors.pink.600"), ...theme("colors.pink") },
-          info: { DEFAULT: theme("colors.sky.400"), ...theme("colors.sky") },
-          danger: { DEFAULT: theme("colors.red.600"), ...theme("colors.red") },
-          dark: theme("colors.gray.900"),
-          muted: theme("colors.gray.500"),
-        }),
-      },
+      // override with `@theme { --color-primary-600: …; }`
+      extend: { colors },
     },
   }),
 );
