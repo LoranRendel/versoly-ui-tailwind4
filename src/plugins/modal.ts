@@ -1,8 +1,15 @@
 import type { IModalOptions } from "../types";
-import { cls, waitForElement, parseElementOptions, addEventListenerToSelector, addEscapeListener } from "../utils";
+import {
+  cls,
+  util,
+  waitForElement,
+  parseElementOptions,
+  addEventListenerToSelector,
+  addEscapeListener,
+} from "../utils";
 
 const defaults = {
-  closeButton: "fixed right-0 top-0 z-50 text-white px-5 close",
+  closeButton: ["fixed", "right-0", "top-0", "z-50", "text-white", "px-5"],
 };
 
 // if (element.getAttribute('aria-label')) {
@@ -28,7 +35,7 @@ const Modal = async (element: HTMLElement) => {
     content = `<img src="${imgSrc}">`;
   }
   if (iframeSrc) {
-    content = `<iframe allow="autoplay" class="aspect-video w-full" src="${iframeSrc}" allowfullscreen="" autoplay=""></iframe>`;
+    content = `<iframe allow="autoplay" class="${util("aspect-video", "w-full").join(" ")}" src="${iframeSrc}" allowfullscreen="" autoplay=""></iframe>`;
   }
 
   const modalHTML = `<div class="${cls("modal")}" id="${id}">
@@ -36,8 +43,8 @@ const Modal = async (element: HTMLElement) => {
     ${content}
   </div>
   
-  <button class="${defaults.closeButton}" onclick="removeModal('${id}')" type="button" data-dismiss="modal" aria-label="Close">
-    <span class="text-4xl" aria-hidden="true">&times;</span>
+  <button class="${util(...defaults.closeButton).join(" ")} close" onclick="removeModal('${id}')" type="button" data-dismiss="modal" aria-label="Close">
+    <span class="${util("text-4xl").join(" ")}" aria-hidden="true">&times;</span>
   </button>
 
   <div class="${cls("modal-bg")}" onclick="removeModal('${id}')"></div>
@@ -53,7 +60,7 @@ const Modal = async (element: HTMLElement) => {
       (window as any)[beforeShown]();
     }
 
-    window.setTimeout(() => ele.classList.add("opacity-100"), 32);
+    window.setTimeout(() => ele.classList.add(...util("opacity-100")), 32);
   });
 };
 
@@ -64,7 +71,7 @@ const removeModal = (id = "v-modal") => {
     return;
   }
 
-  modal.classList.remove("opacity-100");
+  modal.classList.remove(...util("opacity-100"));
   window.setTimeout(() => {
     modal.remove();
     document.body.style.overflow = "";

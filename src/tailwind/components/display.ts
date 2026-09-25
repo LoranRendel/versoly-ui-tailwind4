@@ -1,4 +1,4 @@
-import type { Styles } from "../types";
+import type { Component } from "../types";
 
 const sizes = [
   ["calc(1.625rem+4.5vw)", "5rem"],
@@ -9,6 +9,8 @@ const sizes = [
   ["calc(1.375rem+1.6vw)", "2.5rem"],
 ];
 
-export const display: Styles = Object.fromEntries(
-  sizes.map(([fluid, max], i) => [`.display-${i + 1}`, `text-[${fluid}] lg:text-[${max}] leading-[1.2] font-light`]),
-);
+export const display: Component = {
+  base: Object.fromEntries(
+    sizes.map(([fluid, max], i) => [`.display-${i + 1}`, `text-[${fluid}] lg:text-[${max}] leading-[1.2] font-light`]),
+  ),
+};

@@ -1,7 +1,8 @@
 import type { IAccordionOptions } from "../types";
 import {
   addEventListeners,
-  cls,
+  sel,
+  util,
   getDuration,
   getElementsBySelectors,
   getElementsByToggle,
@@ -19,9 +20,9 @@ const handleOpen = (trigger: HTMLElement, target: HTMLElement, duration: number)
   target.style.height = "0";
 
   trigger.setAttribute("aria-expanded", "true");
-  target.classList.add("block");
-  target.classList.add("show");
-  target.classList.remove("hidden");
+  target.classList.add(...util("block"));
+  target.classList.add(...util("show"));
+  target.classList.remove(...util("hidden"));
 
   window.setTimeout(() => {
     target.style.height = `${target.scrollHeight}px`;
@@ -37,11 +38,11 @@ const handleClose = (trigger: HTMLElement, target: HTMLElement, duration: number
   target.style.height = "0";
 
   trigger.setAttribute("aria-expanded", "false");
-  target.classList.remove("show");
+  target.classList.remove(...util("show"));
 
   window.setTimeout(() => {
-    target.classList.remove("block");
-    target.classList.add("hidden");
+    target.classList.remove(...util("block"));
+    target.classList.add(...util("hidden"));
   }, duration);
 };
 
@@ -55,10 +56,10 @@ const Accordion = (element: HTMLElement) => {
 
   const canOpenMultiple = max === null;
 
-  const items: IAccordionItem[] = getElementsBySelectors(`.${cls("accordion-item")} [aria-expanded]`, element).reduce(
+  const items: IAccordionItem[] = getElementsBySelectors(`${sel("accordion-item")} [aria-expanded]`, element).reduce(
     (acc: IAccordionItem[], trigger) => {
-      const item = trigger.closest(`.${cls("accordion-item")}`);
-      const target = item?.querySelector(`.${cls("accordion-collapse")}`);
+      const item = trigger.closest(sel("accordion-item"));
+      const target = item?.querySelector(sel("accordion-collapse"));
       if (item && target instanceof HTMLElement) {
         acc.push({ trigger, target });
       }
@@ -104,8 +105,8 @@ const Accordion = (element: HTMLElement) => {
 
 export const accordion = () => {
   // legacy support for accordion via data attributes on headers
-  getElementsBySelectors(`.${cls("accordion-header")}[data-toggle=accordion]`).forEach((element) => {
-    const parentAccordion = element.closest(`.${cls("accordion")}`);
+  getElementsBySelectors(`${sel("accordion-header")}[data-toggle=accordion]`).forEach((element) => {
+    const parentAccordion = element.closest(sel("accordion"));
     if (parentAccordion) {
       parentAccordion.setAttribute("data-toggle", "accordion");
 

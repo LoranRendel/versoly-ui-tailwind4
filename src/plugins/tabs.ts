@@ -1,4 +1,4 @@
-import { addEventListenerToSelector, getElementBySelector } from "../utils/index";
+import { addEventListenerToSelector, getElementBySelector, util } from "../utils/index";
 
 const Tabs = (element: HTMLElement) => {
   if (element.getAttribute("aria-selected") === "true") {
@@ -37,7 +37,7 @@ const Tabs = (element: HTMLElement) => {
   if (target.getAttribute("role") === "tabcontent") {
     Array.from(target.children).forEach((n) => {
       if (n.getAttribute("role") === "tabpanel") {
-        n.classList.remove("hidden");
+        n.classList.remove(...util("hidden"));
       }
     });
     return;
@@ -49,11 +49,11 @@ const Tabs = (element: HTMLElement) => {
 
   Array.from(target.parentNode.children).forEach((n) => {
     if (n.getAttribute("role") === "tabpanel") {
-      n.classList.add("hidden");
+      n.classList.add(...util("hidden"));
     }
   });
 
-  target.classList.remove("hidden");
+  target.classList.remove(...util("hidden"));
 };
 
 export const tabs = addEventListenerToSelector('[role="tab"]', "click", Tabs);

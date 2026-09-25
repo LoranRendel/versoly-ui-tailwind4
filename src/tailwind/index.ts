@@ -1,8 +1,11 @@
-import forms from "@tailwindcss/forms";
-import plugin, { type PluginCreator } from "tailwindcss/plugin";
-import { components, type ComponentName } from "./components/index";
-import { addColorVariables, colors } from "./theme";
-import type { CssInJs, Styles } from "./types";
+import plugin from "tailwindcss/plugin";
+import compiledStyles from "virtual:versoly-styles";
+import type { ComponentName } from "./components/index";
+import { LAYERS } from "./layers";
+import { addTokenVariables, theme } from "./theme";
+import type { CompiledComponent, CssInJs } from "./types";
+
+const styles = compiledStyles as Record<ComponentName, CompiledComponent>;
 
 export interface VersolyUIOptions {
   /** Only these components are added. Defaults to all of them. */
@@ -14,7 +17,7 @@ export interface VersolyUIOptions {
 }
 
 // Classes owned by other libraries, Tailwind utilities and state classes set by the JS keep their names.
-const UNPREFIXED_CLASS = /^(show|c|prose|fa-ul|taos-init|text-.*)$/;
+const UNPREFIXED_CLASS = /^(show|prose|fa-ul|taos-init|text-.*)$/;
 
 // `prefix: "v-";` comes from CSS with quotes, `prefix: v-;` without.
 const toPrefix = (value: unknown) => {
@@ -41,7 +44,21 @@ const prefixSelector = (selector: string, prefix: string) =>
     )
     .join("");
 
-const componentNames = Object.keys(components) as ComponentName[];
+// Prefixes the selectors of nested rules too: `:where(& > .btn)`
+const prefixCss = (css: CssInJs, prefix: string): CssInJs =>
+  Object.fromEntries(
+    Object.entries(css).map(([key, value]) => {
+      if (typeof value === "string" || (Array.isArray(value) && typeof value[0] === "string")) {
+        return [key, value];
+      }
+      const nested = Array.isArray(value)
+        ? (value as CssInJs[]).map((css) => prefixCss(css, prefix))
+        : prefixCss(value as CssInJs, prefix);
+      return [key.startsWith("@") ? key : prefixSelector(key, prefix), nested];
+    }),
+  );
+
+const componentNames = Object.keys(styles) as ComponentName[];
 
 // From CSS a single value comes as a string and several as an array: `include: button, card;`
 const toList = (value: unknown): string[] | undefined => {
@@ -71,39 +88,15 @@ const getComponentNames = (options: VersolyUIOptions = {}) => {
   return componentNames.filter((name) => (include?.includes(name) ?? true) && !exclude?.includes(name));
 };
 
-const toCss = (value: string | CssInJs): CssInJs => (typeof value === "string" ? { [`@apply ${value}`]: {} } : value);
-
-// Tailwind 4 registers `addComponents` rules as utilities keyed by class name (generated only when used),
-// so selectors without a class, like `body` or `[data-toggle]`, have to go to `addBase`.
+// Tailwind 4 registers `addComponents` rules as utilities keyed by class name (generated only when used, and
+// prefixed with Tailwind's `prefix(tw)`), so selectors without a class, like `body` or `[data-toggle]`, go to `addBase`.
 const hasClass = (selector: string) => /\.-?[_a-zA-Z]/.test(selector.replace(/\[[^\]]*\]/g, ""));
-
-const splitStyles = (styles: Styles, prefix: string) => {
-  const base: Record<string, CssInJs> = {};
-  const classes: Record<string, CssInJs> = {};
-
-  for (const [selector, value] of Object.entries(styles)) {
-    const css = toCss(value);
-    const parts = prefixSelector(selector, prefix)
-      .split(",")
-      .map((part) => part.trim());
-    const baseSelector = parts.filter((part) => !hasClass(part)).join(", ");
-    const classSelector = parts.filter(hasClass).join(", ");
-
-    if (baseSelector) {
-      base[baseSelector] = css;
-    }
-    if (classSelector) {
-      classes[classSelector] = css;
-    }
-  }
-
-  return { base, classes };
-};
 
 const versolyUI: ReturnType<typeof plugin.withOptions<VersolyUIOptions>> = plugin.withOptions<VersolyUIOptions>(
   (options) => (api) => {
     const { addBase, addComponents } = api;
-    addColorVariables(api);
+    const names = getComponentNames(options);
+    addTokenVariables(api, new Set(names.flatMap((name) => styles[name].variables)));
 
     const prefix = toPrefix(options?.prefix);
     if (prefix) {
@@ -111,32 +104,40 @@ const versolyUI: ReturnType<typeof plugin.withOptions<VersolyUIOptions>> = plugi
       addBase({ ":root": { "--vui-prefix": `"${prefix}"` } });
     }
 
-    const names = getComponentNames(options);
-    if (names.includes("form")) {
-      // `.form-input`, `.form-checkbox`… are built on top of the forms plugin's classes. They go to the base layer,
-      // so the component styles always override them.
-      const addPrefixedBase = (rules: Record<string, CssInJs>) =>
-        addBase(
-          Object.fromEntries(Object.entries(rules).map(([selector, css]) => [prefixSelector(selector, prefix), css])),
-        );
-      (forms({ strategy: "class" }).handler as PluginCreator)({
-        ...api,
-        addComponents: (rules) => (Array.isArray(rules) ? rules.forEach(addPrefixedBase) : addPrefixedBase(rules)),
-      });
-    }
+    const properties: Record<string, CssInJs> = {};
 
     for (const name of names) {
-      const { base, classes } = splitStyles(components[name], prefix);
-      if (Object.keys(base).length > 0) {
-        addBase(base);
+      Object.assign(properties, styles[name].properties);
+
+      for (const { selector, layer, css } of styles[name].rules) {
+        const parts = prefixSelector(selector, prefix)
+          .split(",")
+          .map((part) => part.trim());
+        const baseSelector = parts.filter((part) => !hasClass(part)).join(", ");
+        const classSelector = parts.filter(hasClass).join(", ");
+        const prefixed = prefix ? prefixCss(css, prefix) : css;
+
+        if (baseSelector) {
+          addBase({ [baseSelector]: prefixed });
+        }
+        if (classSelector) {
+          // like daisyUI: `.btn { @layer versoly.l1.l2.l3 { … } }`, Tailwind moves the layer out of the rule
+          addComponents({
+            [classSelector]: layer === "unlayered" ? prefixed : { [`@layer ${LAYERS[layer]}`]: prefixed },
+          });
+        }
       }
-      addComponents(classes);
+    }
+
+    // the `--tw-*` variables the components use, Tailwind only registers the ones of the utilities in the markup
+    if (Object.keys(properties).length > 0) {
+      addBase(Object.fromEntries(Object.entries(properties).map(([name, css]) => [`@property ${name}`, css])));
     }
   },
   () => ({
     theme: {
-      // override with `@theme { --color-primary-600: …; }`
-      extend: { colors },
+      // override with `@theme { --color-primary-600: …; --radius-field: …; }`
+      extend: theme,
     },
   }),
 );

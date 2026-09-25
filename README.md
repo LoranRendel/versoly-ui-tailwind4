@@ -72,7 +72,7 @@ npm install -D @loranrendel/versoly-ui tailwindcss
 pnpm add -D @loranrendel/versoly-ui tailwindcss
 ```
 
-Dependencies ([Floating UI](https://floating-ui.com/) for dropdowns, [@tailwindcss/forms](https://github.com/tailwindlabs/tailwindcss-forms) for form controls) are installed with the package, you don't need to add them yourself.
+You don't need to add anything else: [Floating UI](https://floating-ui.com/) for dropdowns is installed with the package, and the [@tailwindcss/forms](https://github.com/tailwindlabs/tailwindcss-forms) classes for form controls are built into the plugin.
 
 ### Tailwind CSS plugin
 
@@ -85,7 +85,23 @@ Add the plugin to your main CSS file:
 
 The `form` component includes the `@tailwindcss/forms` classes (`.form-input`, `.form-checkbox`…). To also reset unstyled inputs globally, add `@plugin "@tailwindcss/forms";` yourself.
 
-A component's classes end up in the CSS only when your markup uses them, just like Tailwind utilities. Utilities always override component styles, so `class="btn btn-primary px-8"` works as expected.
+A component's classes end up in the CSS only when your markup uses them, just like Tailwind utilities.
+
+Like [daisyUI](https://daisyui.com/), the components are shipped as plain CSS compiled when the package is built, nothing is left for `@apply` in your project.
+
+#### Layers
+
+The components are in cascade layers inside Tailwind's `utilities` layer, so utilities always override them, whatever the specificity: `class="btn btn-primary px-8"` works as expected. From the weakest to the strongest:
+
+| Layer                    | Styles                                                             |
+| ------------------------ | ------------------------------------------------------------------ |
+| `versoly.l1.l2.l3.forms` | `@tailwindcss/forms` classes the `form` component is built on      |
+| `versoly.l1.l2.l3`       | components: `.btn`, `.card`, `.navbar`…                            |
+| `versoly.l1.l2`          | sizes and modifiers: `.btn-lg`, `.modal-lg`, `.table-striped`…     |
+| `versoly.l1`             | colors: `.btn-primary`, `.btn-outline.btn-primary`, `.alert-info`… |
+| `versoly`                | states: `[aria-current]`, `[aria-selected]`, `.show`, `.disabled`  |
+
+`.container` (overrides Tailwind's `container`), `.navbar > .container` and the `.prose` tweaks (override `@tailwindcss/typography`) are not layered. Global element styles (`body`, `h1`, `a`…) are in Tailwind's `base` layer.
 
 #### Options
 
@@ -130,7 +146,16 @@ Unknown component names and invalid prefixes are reported as warnings in the bui
 
 These names are never prefixed: Tailwind utilities (`text-info`, `hidden`…), classes of other libraries (`prose`, `fa-ul`, `taos-init`) and the `show` state class. The JavaScript picks the prefix up automatically from the `--vui-prefix` CSS variable the plugin adds, so no extra configuration is needed. With a prefix, `data-dismiss="alert"` looks for the closest `.v-alert`.
 
-Tailwind's own prefix (`@import "tailwindcss" prefix(tw)`) is not supported.
+**Tailwind prefix.** With `@import "tailwindcss" prefix(tw)` the component classes are prefixed like utilities, nothing to configure. Combined with the plugin prefix, Tailwind's comes first:
+
+```html
+<!-- prefix(tw) -->
+<button class="tw:btn tw:btn-primary tw:px-8">Save</button>
+<!-- prefix(tw) and prefix: "v-" -->
+<button class="tw:v-btn tw:v-btn-primary tw:px-8">Save</button>
+```
+
+The JavaScript finds Tailwind's prefix in the markup (e.g. `class="tw:btn"`) and uses it for the classes it looks for and toggles (`tw:show`, `tw:hidden`…). If the page has no component to detect it from, set it on `<html data-tw-prefix="tw">`.
 
 #### Components
 
@@ -186,7 +211,7 @@ The colors are CSS variables (`--color-primary`, `--color-primary-50` … `--col
 }
 ```
 
-Override any color in `@theme`, shades you don't set keep their defaults. Like any `@theme` variable, an overridden color is only added to the CSS when something uses it, use `@theme static` to always keep it.
+Override any color in `@theme`, shades you don't set keep their defaults. The components read the `--color-*` variables above, the plugin always sets them, also with `prefix(tw)` where Tailwind's own theme variables become `--tw-color-*`.
 
 ```css
 @theme {
@@ -209,6 +234,34 @@ Or reuse a Tailwind palette:
   --color-primary-50: var(--color-indigo-50);
   /* … */
   --color-primary-950: var(--color-indigo-950);
+}
+```
+
+#### Radius
+
+Like daisyUI, corners come from three tokens, also available as utilities (`rounded-field`, `rounded-box`…):
+
+| Token               | Default                  | Used by                            |
+| ------------------- | ------------------------ | ---------------------------------- |
+| `--radius-selector` | `--radius-sm` (0.25rem)  | badges, checkboxes, dropdown menus |
+| `--radius-field`    | `--radius-md` (0.375rem) | buttons, inputs, selects, alerts   |
+| `--radius-box`      | `--radius-lg` (0.5rem)   | cards, accordion items, tooltips   |
+
+```css
+@theme {
+  --radius-field: 0;
+  --radius-box: 1rem;
+}
+```
+
+#### Tailwind theme
+
+Everything else is compiled into the components (spacing, font sizes, shadows…), except the Tailwind colors they use: `gray`, `neutral`, `green`, `yellow`, `purple`, `white` and `black`. The plugin sets their variables from your theme, so the components follow it, with or without `prefix(tw)`:
+
+```css
+@theme {
+  --color-gray-100: oklch(96.7% 0.003 264.542); /* card headers, alerts… */
+  --radius-md: 0.5rem; /* --radius-field, unless it's set */
 }
 ```
 
@@ -255,6 +308,9 @@ Tailwind doesn't scan `node_modules`, so utilities the JavaScript adds at runtim
 
 ```css
 @source inline("block hidden opacity-0 opacity-100 visible fixed right-0 top-0 z-50 text-white px-5 text-4xl aspect-video w-full");
+
+/* with prefix(tw) */
+@source inline("tw:{block,hidden,opacity-0,opacity-100,visible,fixed,right-0,top-0,z-50,text-white,px-5,text-4xl,aspect-video,w-full}");
 ```
 
 ### Upgrading from Tailwind CSS 3

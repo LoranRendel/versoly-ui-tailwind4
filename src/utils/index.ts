@@ -5,8 +5,61 @@ export const getPrefix = () =>
     .trim()
     .replace(/^(["'])(.*)\1$/, "$2");
 
-/** Component class name with the prefix: `cls("modal")` → `v-modal` */
-export const cls = (name: string) => `${getPrefix()}${name}`;
+// Component classes that are only used on their own, to find Tailwind's prefix in the markup
+const COMPONENT_CLASSES = [
+  "accordion",
+  "accordion-item",
+  "alert",
+  "badge",
+  "btn",
+  "card",
+  "dropdown-menu",
+  "modal",
+  "navbar",
+  "navbar-row",
+  "progress",
+  "tab",
+  "tab-list",
+  "table",
+];
+
+/**
+ * Tailwind's prefix, `tw` for `@import "tailwindcss" prefix(tw)`. The plugin can't know it, so it's found in the
+ * markup (`class="tw:btn"`), or set with `<html data-tw-prefix="tw">`.
+ */
+export const getTailwindPrefix = (prefix = getPrefix()) => {
+  const explicit = document.documentElement.dataset.twPrefix;
+  if (explicit !== undefined) {
+    return explicit;
+  }
+
+  for (const element of document.querySelectorAll('[class*=":"]')) {
+    for (const name of element.classList) {
+      const [, twPrefix, className] = name.match(/^([a-z]+):(.+)$/) ?? [];
+      if (className?.startsWith(prefix) && COMPONENT_CLASSES.includes(className.slice(prefix.length))) {
+        return twPrefix;
+      }
+    }
+  }
+  return "";
+};
+
+const variant = (twPrefix = getTailwindPrefix()) => (twPrefix ? `${twPrefix}:` : "");
+
+/** Component class name with the prefixes: `cls("modal")` → `tw:v-modal` */
+export const cls = (name: string) => {
+  const prefix = getPrefix();
+  return `${variant(getTailwindPrefix(prefix))}${prefix}${name}`;
+};
+
+/** Tailwind utility or state class with Tailwind's prefix: `util("hidden")` → `tw:hidden` */
+export const util = (...names: string[]) => {
+  const twVariant = variant();
+  return names.map((name) => `${twVariant}${name}`);
+};
+
+/** Selector of a component class: `sel("modal")` → `.tw\:v-modal` */
+export const sel = (name: string) => `.${CSS.escape(cls(name))}`;
 
 export const getElementBySelector = (selector: string) => document.querySelector(selector) as HTMLElement;
 
@@ -72,8 +125,8 @@ export const handleResize = () => {
       }
 
       element.setAttribute("aria-expanded", "false");
-      target.classList.remove("show");
-      target.classList.remove("block");
+      target.classList.remove(...util("show"));
+      target.classList.remove(...util("block"));
       target.style.height = "auto";
       target.style.overflow = "";
     });

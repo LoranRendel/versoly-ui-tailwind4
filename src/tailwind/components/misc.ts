@@ -1,13 +1,19 @@
-import type { Styles } from "../types";
+import type { Component } from "../types";
 
-export const disabled: Styles = {
-  ".disabled": "opacity-80 pointer-events-none",
+export const disabled: Component = {
+  state: {
+    ".disabled": "opacity-80 pointer-events-none",
+  },
 };
 
-export const fontawesome: Styles = {
-  ".fa-ul": "ml-6",
+export const fontawesome: Component = {
+  base: {
+    ".fa-ul": "ml-6",
+  },
 };
 
-export const taos: Styles = {
-  "html :where(.taos-init)": "duration-400",
+export const taos: Component = {
+  base: {
+    "html :where(.taos-init)": "duration-400",
+  },
 };

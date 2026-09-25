@@ -1,4 +1,4 @@
-import type { Styles } from "../types";
+import type { Component } from "../types";
 import { accordion } from "./accordion";
 import { alert } from "./alert";
 import { badge } from "./badge";
@@ -48,6 +48,6 @@ export const components = {
   disabled,
   fontawesome,
   taos,
-} satisfies Record<string, Styles>;
+} satisfies Record<string, Component>;
 
 export type ComponentName = keyof typeof components;

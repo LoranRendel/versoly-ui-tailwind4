@@ -1,6 +1,6 @@
 {
   "name": "@loranrendel/versoly-ui",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Versoly UI - Tailwind CSS 4 framework based on Bootstrap",
   "keywords": [
     "bootstrap to tailwind",
@@ -50,8 +50,8 @@
   "scripts": {
     "dev": "vite",
     "prepare": "pnpm run build",
-    "build": "tsdown",
-    "build:watch": "tsdown --watch",
+    "build": "tsdown --config-loader unrun",
+    "build:watch": "tsdown --config-loader unrun --watch",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
@@ -60,13 +60,15 @@
     "prepack": "pnpm run build"
   },
   "dependencies": {
-    "@floating-ui/dom": "^1.8.0",
-    "@tailwindcss/forms": "^0.5.11"
+    "@floating-ui/dom": "^1.8.0"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/node": "^4.3.3",
+    "happy-dom": "^20.14.5",
     "oxfmt": "^0.32.0",
     "oxlint": "^1.47.0",
+    "postcss": "^8.5.6",
     "tailwindcss": "^4.3.3",
     "tsdown": "^0.20.3",
     "type-fest": "^4.41.0",

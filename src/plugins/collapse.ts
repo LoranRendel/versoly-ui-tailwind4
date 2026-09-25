@@ -1,4 +1,4 @@
-import { cls, getDuration, getTarget, addEventListenerToSelector, getIsAriaExpanded } from "../utils/index";
+import { getDuration, getTarget, addEventListenerToSelector, getIsAriaExpanded, sel, util } from "../utils/index";
 
 const Collapse = (element: HTMLElement) => {
   const target = getTarget(element);
@@ -12,20 +12,20 @@ const Collapse = (element: HTMLElement) => {
 
   if (getIsAriaExpanded(element)) {
     element.setAttribute("aria-expanded", "false");
-    target.classList.remove("show");
+    target.classList.remove(...util("show"));
 
-    setTimeout(() => target.classList.remove("block"), duration);
+    setTimeout(() => target.classList.remove(...util("block")), duration);
     return;
   }
 
   element.setAttribute("aria-expanded", "true");
-  target.classList.add("block");
-  target.classList.add("show");
+  target.classList.add(...util("block"));
+  target.classList.add(...util("show"));
 
   setTimeout(() => {
-    target.querySelectorAll(`.${cls("dropdown-menu")}`).forEach((m) => m.classList.add("hidden"));
+    target.querySelectorAll(sel("dropdown-menu")).forEach((m) => m.classList.add(...util("hidden")));
     const navHeight = target.scrollHeight;
-    target.querySelectorAll(`.${cls("dropdown-menu")}`).forEach((m) => m.classList.remove("hidden"));
+    target.querySelectorAll(sel("dropdown-menu")).forEach((m) => m.classList.remove(...util("hidden")));
     target.style.height = `${navHeight}px`;
   }, 32);
 

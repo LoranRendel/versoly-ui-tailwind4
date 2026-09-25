@@ -1,5 +1,6 @@
 import { defineConfig } from "tsdown";
 import pkg from "./package.json" with { type: "json" };
+import { compileStyles } from "./scripts/compile-styles";
 
 const { name } = pkg;
 const getPackageName = () => {
@@ -46,5 +47,24 @@ export default defineConfig([
     fixedExtension: true,
     dts: true,
     external: [/^tailwindcss/],
+    plugins: [compiledStyles()],
   },
 ]);
+
+/** `virtual:versoly-styles`: the components compiled to plain CSS, see `scripts/compile-styles.ts`. */
+function compiledStyles() {
+  const id = "virtual:versoly-styles";
+  let styles: Promise<string> | undefined;
+
+  return {
+    name: "versoly-styles",
+    resolveId: (source: string) => (source === id ? `\0${id}` : undefined),
+    load: (source: string) => {
+      if (source !== `\0${id}`) {
+        return undefined;
+      }
+      styles ??= compileStyles().then((compiled) => `export default ${JSON.stringify(compiled)};`);
+      return styles;
+    },
+  };
+}

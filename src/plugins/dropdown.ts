@@ -1,5 +1,5 @@
 import { computePosition, offset, shift, type Placement } from "@floating-ui/dom";
-import { addEventListeners, addEscapeListener, getElementsByToggle, parseElementOptions } from "../utils/index";
+import { addEventListeners, addEscapeListener, getElementsByToggle, parseElementOptions, util } from "../utils/index";
 
 const Dropdown = (trigger: HTMLElement) => {
   const target = trigger.nextElementSibling as HTMLElement;
@@ -35,7 +35,7 @@ const Dropdown = (trigger: HTMLElement) => {
     trigger.setAttribute("aria-expanded", "true");
 
     window.requestAnimationFrame(() => {
-      target.classList.add("opacity-100", "visible");
+      target.classList.add(...util("opacity-100", "visible"));
     });
     update();
   };
@@ -43,7 +43,7 @@ const Dropdown = (trigger: HTMLElement) => {
   const hide = () => {
     target.style.display = "";
     trigger.setAttribute("aria-expanded", "false");
-    target.classList.remove("opacity-100", "visible");
+    target.classList.remove(...util("opacity-100", "visible"));
   };
 
   const toggle = () => {
