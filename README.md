@@ -186,7 +186,7 @@ The colors are CSS variables (`--color-primary`, `--color-primary-50` … `--col
 }
 ```
 
-Override any color in `@theme`, shades you don't set keep their defaults:
+Override any color in `@theme`, shades you don't set keep their defaults. Like any `@theme` variable, an overridden color is only added to the CSS when something uses it, use `@theme static` to always keep it.
 
 ```css
 @theme {

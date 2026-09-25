@@ -56,6 +56,7 @@
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
+    "test": "pnpm run build && vitest run",
     "prepack": "pnpm run build"
   },
   "dependencies": {
@@ -63,13 +64,15 @@
     "@tailwindcss/forms": "^0.5.11"
   },
   "devDependencies": {
+    "@tailwindcss/node": "^4.3.3",
     "oxfmt": "^0.32.0",
     "oxlint": "^1.47.0",
     "tailwindcss": "^4.3.3",
     "tsdown": "^0.20.3",
     "type-fest": "^4.41.0",
     "typescript": "^5.9.2",
-    "vite": "v8.0.0-beta.13"
+    "vite": "v8.0.0-beta.13",
+    "vitest": "^5.0.1"
   },
   "peerDependencies": {
     "tailwindcss": "^4.0.0"
