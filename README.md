@@ -188,81 +188,96 @@ The JavaScript finds Tailwind's prefix in the markup (e.g. `class="tw:btn"`) and
 
 `{color}` is one of `primary`, `secondary`, `tertiary`, `info`, `success`, `warning`, `danger`, `neutral`, `dark`, `light`, `black`, `white`, `muted`.
 
+#### Variables
+
+Every CSS variable the plugin defines has `vui` in its name, right after Tailwind's namespace (`--color-vui-primary-600`, `--radius-vui-field`, `--vui-prefix`), and so do its theme utilities (`bg-vui-primary-600`, `rounded-vui-field`), so it doesn't clash with Tailwind, daisyUI or your own theme. The variables have the same name as in `@theme`. The component classes themselves (`.btn`, `.card`…) can be prefixed with the [`prefix`](#options) option.
+
 #### Colors
 
-The plugin adds these colors to the theme:
+The plugin adds these colors:
 
-| Color       | Default         | Used by                            |
-| ----------- | --------------- | ---------------------------------- |
-| `primary`   | Tailwind `blue` | `*-primary`, links, focus states   |
-| `secondary` | Tailwind `pink` | `*-secondary`, `.btn-cta` gradient |
-| `info`      | Tailwind `sky`  | `*-info`                           |
-| `danger`    | Tailwind `red`  | `*-danger`                         |
-| `dark`      | `gray-900`      | `text-dark`, tooltips              |
-| `muted`     | `gray-500`      | `text-muted`                       |
+| Color       | Variables                                           | Utilities                                 | Default         | Used by                            |
+| ----------- | --------------------------------------------------- | ----------------------------------------- | --------------- | ---------------------------------- |
+| `primary`   | `--color-vui-primary`, `--color-vui-primary-50…950` | `bg-vui-primary`, `text-vui-primary-600`… | Tailwind `blue` | `*-primary`, links, focus states   |
+| `secondary` | `--color-vui-secondary`, `…-50…950`                 | `bg-vui-secondary`…                       | Tailwind `pink` | `*-secondary`, `.btn-cta` gradient |
+| `info`      | `--color-vui-info`, `…-50…950`                      | `bg-vui-info`…                            | Tailwind `sky`  | `*-info`                           |
+| `danger`    | `--color-vui-danger`, `…-50…950`                    | `bg-vui-danger`…                          | Tailwind `red`  | `*-danger`                         |
+| `dark`      | `--color-vui-dark`                                  | `bg-vui-dark`…                            | `gray-900`      | `text-dark`, tooltips              |
+| `muted`     | `--color-vui-muted`                                 | `text-vui-muted`…                         | `gray-500`      | `text-muted`                       |
 
 `tertiary`, `success`, `warning` and `neutral` use Tailwind's `purple`, `green`, `yellow` and `neutral`.
 
-The colors are CSS variables (`--color-primary`, `--color-primary-50` … `--color-primary-950`, `--color-dark`, `--color-muted`…), always added to `:root` whatever components are included, so they can be used in your own CSS:
+The variables are always added to `:root`, whatever components are included, so they can be used in your own CSS:
 
 ```css
 .hero {
-  background: var(--color-primary-600);
+  background: var(--color-vui-primary-600);
 }
 ```
 
-Override any color in `@theme`, shades you don't set keep their defaults. The components read the `--color-*` variables above, the plugin always sets them, also with `prefix(tw)` where Tailwind's own theme variables become `--tw-color-*`.
+Override a color in `@theme`, shades you don't set keep their defaults. It works with `prefix(tw)` too:
 
 ```css
 @theme {
-  --color-primary: oklch(51.1% 0.262 276.966);
-  --color-primary-50: oklch(96.2% 0.018 272.314);
-  --color-primary-100: oklch(93% 0.034 272.788);
+  --color-vui-primary: oklch(51.1% 0.262 276.966);
+  --color-vui-primary-50: oklch(96.2% 0.018 272.314);
   /* … */
-  --color-primary-950: oklch(25.7% 0.09 281.288);
+  --color-vui-primary-950: oklch(25.7% 0.09 281.288);
 
-  --color-dark: #111827;
-  --color-muted: #6b7280;
+  --color-vui-dark: #111827;
 }
 ```
 
-Or reuse a Tailwind palette:
+Or set the variables directly, like daisyUI themes do:
 
 ```css
-@theme inline {
-  --color-primary: var(--color-indigo-600);
-  --color-primary-50: var(--color-indigo-50);
-  /* … */
-  --color-primary-950: var(--color-indigo-950);
+:root {
+  --color-vui-primary-600: var(--color-indigo-600);
 }
 ```
 
 #### Radius
 
-Like daisyUI, corners come from three tokens, also available as utilities (`rounded-field`, `rounded-box`…):
+Like daisyUI, corners come from three tokens:
 
-| Token               | Default                  | Used by                            |
-| ------------------- | ------------------------ | ---------------------------------- |
-| `--radius-selector` | `--radius-sm` (0.25rem)  | badges, checkboxes, dropdown menus |
-| `--radius-field`    | `--radius-md` (0.375rem) | buttons, inputs, selects, alerts   |
-| `--radius-box`      | `--radius-lg` (0.5rem)   | cards, accordion items, tooltips   |
+| Variable                | Utility                | Default                  | Used by                            |
+| ----------------------- | ---------------------- | ------------------------ | ---------------------------------- |
+| `--radius-vui-selector` | `rounded-vui-selector` | `--radius-sm` (0.25rem)  | badges, checkboxes, dropdown menus |
+| `--radius-vui-field`    | `rounded-vui-field`    | `--radius-md` (0.375rem) | buttons, inputs, selects, alerts   |
+| `--radius-vui-box`      | `rounded-vui-box`      | `--radius-lg` (0.5rem)   | cards, accordion items, tooltips   |
 
 ```css
 @theme {
-  --radius-field: 0;
-  --radius-box: 1rem;
+  --radius-vui-field: 0;
+  --radius-vui-box: 1rem;
 }
 ```
 
 #### Tailwind theme
 
-Everything else is compiled into the components (spacing, font sizes, shadows…), except the Tailwind colors they use: `gray`, `neutral`, `green`, `yellow`, `purple`, `white` and `black`. The plugin sets their variables from your theme, so the components follow it, with or without `prefix(tw)`:
+Everything else is compiled into the components (spacing, font sizes, shadows…), except the Tailwind colors they use: `gray`, `neutral`, `green`, `yellow`, `purple`, `white` and `black`. The plugin copies them from your theme into `--color-vui-gray-100`…, so the components follow it, with or without `prefix(tw)`:
 
 ```css
 @theme {
   --color-gray-100: oklch(96.7% 0.003 264.542); /* card headers, alerts… */
-  --radius-md: 0.5rem; /* --radius-field, unless it's set */
+  --radius-md: 0.5rem; /* --radius-vui-field, unless it's set */
 }
+```
+
+#### With daisyUI
+
+Both can be used together: the variables and theme utilities don't clash, prefix the component classes to keep daisyUI's `.btn`, `.card`…
+
+```css
+@import "tailwindcss";
+@plugin "daisyui";
+@plugin "@loranrendel/versoly-ui/plugin" {
+  prefix: "v-";
+}
+```
+
+```html
+<button class="btn btn-primary">daisyUI</button> <button class="v-btn v-btn-primary">Versoly UI</button>
 ```
 
 #### JavaScript config
@@ -318,8 +333,15 @@ Tailwind doesn't scan `node_modules`, so utilities the JavaScript adds at runtim
 - Remove the old `@tailwind` directives and the Versoly UI CSS, use `@import "tailwindcss"` and `@plugin "@loranrendel/versoly-ui/plugin"`.
 - Move custom colors from `tailwind.config.js` to `@theme` (see [Colors](#colors)).
 - Remove the Floating UI `<script>` tags and `window.FloatingUIDOM`, and `@tailwindcss/forms` if you only used it for Versoly UI forms.
-- The accordion arrow and the dropdown caret are CSS masks now and use the current text color, `bg-arrow-down` and `--svg-caret-down` don't need to be defined.
+- The accordion arrow and the dropdown caret are CSS masks now and use the current text color, `bg-arrow-down` and `--svg-caret-down` are gone.
 - `.btn-ghost.btn-dark` uses gray instead of pink on hover.
+
+### Upgrading from 3.0
+
+- The plugin's variables and theme utilities have `vui` in their names, so they don't clash with daisyUI:
+  - `--color-primary-600` → `--color-vui-primary-600`, in CSS and in `@theme` (same for `secondary`, `info`, `danger`, `dark`, `muted`)
+  - `bg-primary-600`, `text-dark`… → `bg-vui-primary-600`, `text-vui-dark`…
+- Cards use `--radius-vui-box` (0.5rem) instead of 0.375rem.
 
 ## 💡 Inspiration
 

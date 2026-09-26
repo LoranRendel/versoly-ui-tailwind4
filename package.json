@@ -1,6 +1,6 @@
 {
   "name": "@loranrendel/versoly-ui",
-  "version": "3.1.0",
+  "version": "4.0.0",
   "description": "Versoly UI - Tailwind CSS 4 framework based on Bootstrap",
   "keywords": [
     "bootstrap to tailwind",
@@ -65,6 +65,7 @@
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/node": "^4.3.3",
+    "daisyui": "^5.7.46",
     "happy-dom": "^20.14.5",
     "oxfmt": "^0.32.0",
     "oxlint": "^1.47.0",

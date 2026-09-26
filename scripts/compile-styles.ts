@@ -10,13 +10,13 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 
 // Like daisyUI, the components are shipped as plain CSS: nothing is left for `@apply` in the user's project, so
 // Tailwind's `prefix(tw)` only has to prefix the class names. The theme is inlined, `calc(0.25rem * 4)` instead of
-// `var(--spacing)` (which is `--tw-spacing` with a prefix). Only the design tokens stay variables, the plugin sets
-// them from the user's theme.
+// `var(--spacing)` (which is `--tw-spacing` with a prefix). Only the design tokens stay variables, renamed to the
+// plugin's own `vui` ones (`bg-primary-600` → `var(--color-vui-primary-600)`), which it sets from the user's theme.
 const INLINE_THEME = `@import "tailwindcss/theme.css" theme(inline);
 @import "tailwindcss/utilities.css";`;
 const THEME = `${INLINE_THEME}
 @theme inline {
-${tokens.map(({ variable }) => `  ${variable}: var(${variable});`).join("\n")}
+${tokens.map(({ themeVariable, variable }) => `  ${themeVariable}: var(${variable});`).join("\n")}
 }`;
 
 const tokenVariables = new Set(tokens.map(({ variable }) => variable));
